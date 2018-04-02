@@ -20,12 +20,13 @@ func (c *Config) getUnit(name string) (Unit, error) {
 		}
 	}
 
-	return Unit{}, fmt.Errorf("unit %v not found in config\n", name)
+	return Unit{}, fmt.Errorf("unit %v not found in config", name)
 }
 
 type Unit struct {
 	Name      string   `yaml:"name"`
 	OnActive  []string `yaml:"on_active"`
+	OnInctive []string `yaml:"on_inactive"`
 	OnFailed  []string `yaml:"on_failed"`
 	BlockedBy []string `yaml:"blocked_by"`
 }

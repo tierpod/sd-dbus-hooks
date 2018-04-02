@@ -56,9 +56,9 @@ func (s *subscriber) processEvent(u *dbus.UnitStatus) {
 	case "active":
 		s.execute(unit.OnActive, u)
 	case "inactive":
-		s.execute(unit.OnActive, u)
+		s.execute(unit.OnInctive, u)
 	case "failed":
-		s.execute(unit.OnActive, u)
+		s.execute(unit.OnFailed, u)
 	}
 }
 
