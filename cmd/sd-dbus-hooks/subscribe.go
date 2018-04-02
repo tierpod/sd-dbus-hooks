@@ -1,11 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"os/exec"
 	"time"
 
 	"github.com/coreos/go-systemd/dbus"
+	"github.com/google/shlex"
 )
 
 type subscriber struct {
@@ -32,11 +33,50 @@ func (s *subscriber) subscribe() {
 				// &{Name:rsyslog.service Description:System Logging Service LoadState:loaded ActiveState:inactive SubState:dead Followed: Path:/org/freedesktop/systemd1/unit/rsyslog_2eservice JobId:0 JobType: JobPath:/}
 				// &{Name:rsyslog.service Description:System Logging Service LoadState:loaded ActiveState:active SubState:running Followed: Path:/org/freedesktop/systemd1/unit/rsyslog_2eservice JobId:0 JobType: JobPath:/}
 				for _, unit := range events {
-					fmt.Printf("%+v\n", unit)
+					s.processEvent(unit)
 				}
 			case err := <-chErr:
 				log.Printf("[ERROR] %v", err)
 			}
 		}
 	}()
+}
+
+func (s *subscriber) processEvent(u *dbus.UnitStatus) {
+	unit, err := s.cfg.getUnit(u.Name)
+	if err != nil {
+		log.Printf("[ERROR] %v", err)
+		return
+	}
+
+	log.Printf("[INFO] match unit %v, ActiveState %v, SubState %v", u.Name, u.ActiveState, u.SubState)
+
+	switch u.ActiveState {
+	case "active":
+		s.execute(unit.OnActive)
+	case "inactive":
+		s.execute(unit.OnActive)
+	case "failed":
+		s.execute(unit.OnActive)
+	}
+}
+
+func (s *subscriber) execute(cmds []string) {
+	for _, c := range cmds {
+		log.Printf("[INFO] execute %v", c)
+		cc, err := shlex.Split(c)
+		if err != nil {
+			log.Printf("[ERROR] %v", err)
+		}
+
+		command := exec.Command(cc[0])
+		if len(cc) > 1 {
+			command = exec.Command(cc[0], cc[1:]...)
+		}
+		err = command.Start()
+		if err != nil {
+			log.Printf("[ERROR] %v", err)
+			continue
+		}
+	}
 }

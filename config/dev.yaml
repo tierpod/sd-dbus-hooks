@@ -4,9 +4,11 @@ http:
 subscribe_timeout: 5
 
 units:
-  - name: test1.service
+  - name: rsyslog.service
     on_active:
       - logger "test1.service active"
+    on_inactive:
+      - logger "test1.service inactive"
     on_failed:
       - logger "test1.service failed"
     blocked_by:
