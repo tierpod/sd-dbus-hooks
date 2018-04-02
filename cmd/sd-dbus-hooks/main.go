@@ -45,37 +45,13 @@ func main() {
 
 	// http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
+	log.Printf("[INFO] subscribe to systemd events with timeout %v\n", cfg.SubscribeTimeout)
+	s := newSubscriber(conn, cfg)
+	s.subscribe()
+
 	log.Printf("[INFO] starting web server on: %v\n", cfg.HTTP.Bind)
 	err = http.ListenAndServe(cfg.HTTP.Bind, nil)
 	if err != nil {
 		log.Fatalf("[ERROR] %v", err)
 	}
-
-	// units, err := conn.ListUnits()
-	// if err != nil {
-	// 	log.Fatalf("[ERROR] %v", err)
-	// }
-	// for _, u := range units {
-	// 	fmt.Printf("%+v\n", u)
-	// }
-
-	// err = conn.Subscribe()
-	// if err != nil {
-	// 	log.Fatalf("[ERROR] %v", err)
-	// }
-
-	// chUnits, chErr := conn.SubscribeUnits(time.Second * 5)
-
-	// for {
-	// 	select {
-	// 	case uu := <-chUnits:
-	// 		// &{Name:rsyslog.service Description:System Logging Service LoadState:loaded ActiveState:inactive SubState:dead Followed: Path:/org/freedesktop/systemd1/unit/rsyslog_2eservice JobId:0 JobType: JobPath:/}
-	// 		// &{Name:rsyslog.service Description:System Logging Service LoadState:loaded ActiveState:active SubState:running Followed: Path:/org/freedesktop/systemd1/unit/rsyslog_2eservice JobId:0 JobType: JobPath:/}
-	// 		for _, u := range uu {
-	// 			fmt.Printf("%+v\n", u)
-	// 		}
-	// 	case err := <-chErr:
-	// 		log.Printf("[ERROR] %v", err)
-	// 	}
-	// }
 }

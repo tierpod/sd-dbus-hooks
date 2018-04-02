@@ -7,8 +7,9 @@ import (
 )
 
 type Config struct {
-	Units []Unit `yaml:"units"`
-	HTTP  HTTP   `yaml:"http"`
+	Units            []Unit `yaml:"units"`
+	HTTP             HTTP   `yaml:"http"`
+	SubscribeTimeout int    `yaml:"subscribe_timeout"`
 }
 
 type Unit struct {

@@ -1,6 +1,8 @@
 http:
   bind: 0.0.0.0:8080
 
+subscribe_timeout: 5
+
 units:
   - name: test1.service
     on_active:
