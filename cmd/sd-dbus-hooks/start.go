@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -9,14 +10,16 @@ import (
 
 type unitStartHandler struct {
 	conn *dbus.Conn
+	cfg  *Config
 }
 
 func (h unitStartHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Path[len("/unit/start/"):]
+
 	result := make(chan string)
 	log.Printf("[INFO] starting unit %v", name)
 
-	_, err := h.conn.StartUnit(name, "fail", result)
+	err := start(h.conn, h.cfg, name, result)
 	if err != nil {
 		log.Printf("[ERROR] %s", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -38,4 +41,45 @@ func (h unitStartHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	return
+}
+
+func start(conn *dbus.Conn, cfg *Config, name string, ch chan<- string) error {
+	// check if unit in config
+	unit, err := cfg.getUnit(name)
+	if err != nil {
+		return err
+	}
+
+	// units, err := conn.ListUnits()
+	// if err != nil {
+	// 	return err
+	// }
+
+	// check if unit active
+	units, err := conn.ListUnitsByPatterns([]string{"active"}, []string{name})
+	if err != nil {
+		return err
+	}
+
+	if len(units) != 0 {
+		return fmt.Errorf("unit %v already active", name)
+	}
+
+	// check if unit blocked by other active unit
+	blockUnits, err := conn.ListUnitsByPatterns([]string{"active"}, unit.BlockedBy)
+	if err != nil {
+		return err
+	}
+
+	if len(blockUnits) != 0 {
+		return fmt.Errorf("unit %v blocked by active units %+v", name, blockUnits)
+	}
+
+	// start unit
+	_, err = conn.StartUnit(name, "fail", ch)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

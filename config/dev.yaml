@@ -12,7 +12,7 @@ units:
     on_failed:
       - logger "test1.service failed"
     blocked_by:
-      - test2.service
+      - crond.service
 
   - name: test2.service
     on_active:

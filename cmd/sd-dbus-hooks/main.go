@@ -39,7 +39,7 @@ func main() {
 		log.Fatalf("[ERROR] %v", err)
 	}
 
-	http.Handle("/unit/start/", unitStartHandler{conn})
+	http.Handle("/unit/start/", unitStartHandler{conn, cfg})
 	http.Handle("/unit/stop/", unitStopHandler{conn})
 	http.Handle("/unit/status/", unitStatusHandler{conn})
 
@@ -54,4 +54,14 @@ func main() {
 	if err != nil {
 		log.Fatalf("[ERROR] %v", err)
 	}
+}
+
+func contains(s string, ss []string) bool {
+	for _, i := range ss {
+		if i == s {
+			return true
+		}
+	}
+
+	return false
 }

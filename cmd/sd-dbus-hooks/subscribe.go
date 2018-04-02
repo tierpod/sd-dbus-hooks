@@ -1,3 +1,5 @@
+// https://www.freedesktop.org/wiki/Software/systemd/dbus/
+
 package main
 
 import (
@@ -30,8 +32,6 @@ func (s *subscriber) subscribe() {
 		for {
 			select {
 			case events := <-chEvents:
-				// &{Name:rsyslog.service Description:System Logging Service LoadState:loaded ActiveState:inactive SubState:dead Followed: Path:/org/freedesktop/systemd1/unit/rsyslog_2eservice JobId:0 JobType: JobPath:/}
-				// &{Name:rsyslog.service Description:System Logging Service LoadState:loaded ActiveState:active SubState:running Followed: Path:/org/freedesktop/systemd1/unit/rsyslog_2eservice JobId:0 JobType: JobPath:/}
 				for _, unit := range events {
 					s.processEvent(unit)
 				}
@@ -45,7 +45,7 @@ func (s *subscriber) subscribe() {
 func (s *subscriber) processEvent(u *dbus.UnitStatus) {
 	unit, err := s.cfg.getUnit(u.Name)
 	if err != nil {
-		log.Printf("[ERROR] %v", err)
+		// log.Printf("[DEBUG] %v", err)
 		return
 	}
 
