@@ -6,16 +6,10 @@ subscribe_timeout: 5
 units:
   - name: rsyslog.service
     on_active:
-      - logger "test1.service active"
+      - logger "{unit_name} {unit_state}"
     on_inactive:
-      - logger "test1.service inactive"
+      - logger "{unit_name} {unit_state}"
     on_failed:
-      - logger "test1.service failed"
+      - logger "{unit_name} {unit_state}"
     blocked_by:
       - crond.service
-
-  - name: test2.service
-    on_active:
-      - logger "test1.service active"
-    on_failed:
-      - logger "test2.service.failed"

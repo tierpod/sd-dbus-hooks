@@ -60,14 +60,16 @@ func start(conn *dbus.Conn, cfg *Config, name string, ch chan<- string) error {
 		return fmt.Errorf("unit %v already active", name)
 	}
 
-	// check if unit blocked by other active unit
-	blockUnits, err := conn.ListUnitsByPatterns([]string{"active"}, unit.BlockedBy)
-	if err != nil {
-		return err
-	}
+	if len(unit.BlockedBy) > 0 {
+		// check if unit blocked by other active unit
+		blockUnits, err := conn.ListUnitsByPatterns([]string{"active"}, unit.BlockedBy)
+		if err != nil {
+			return err
+		}
 
-	if len(blockUnits) != 0 {
-		return fmt.Errorf("unit %v blocked by active units %+v", name, blockUnits)
+		if len(blockUnits) != 0 {
+			return fmt.Errorf("unit %v blocked by active units %+v", name, blockUnits)
+		}
 	}
 
 	// start unit

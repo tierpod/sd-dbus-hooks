@@ -5,6 +5,7 @@ package main
 import (
 	"log"
 	"os/exec"
+	"strings"
 	"time"
 
 	"github.com/coreos/go-systemd/dbus"
@@ -53,16 +54,18 @@ func (s *subscriber) processEvent(u *dbus.UnitStatus) {
 
 	switch u.ActiveState {
 	case "active":
-		s.execute(unit.OnActive)
+		s.execute(unit.OnActive, u)
 	case "inactive":
-		s.execute(unit.OnActive)
+		s.execute(unit.OnActive, u)
 	case "failed":
-		s.execute(unit.OnActive)
+		s.execute(unit.OnActive, u)
 	}
 }
 
-func (s *subscriber) execute(cmds []string) {
+func (s *subscriber) execute(cmds []string, u *dbus.UnitStatus) {
 	for _, c := range cmds {
+		c = strings.Replace(c, "{unit_name}", u.Name, -1)
+		c = strings.Replace(c, "{unit_state}", u.ActiveState+"/"+u.SubState, -1)
 		log.Printf("[INFO] execute %v", c)
 		cc, err := shlex.Split(c)
 		if err != nil {
