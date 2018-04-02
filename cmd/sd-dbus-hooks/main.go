@@ -41,7 +41,7 @@ func main() {
 
 	http.Handle("/unit/start/", unitStartHandler{conn, cfg})
 	http.Handle("/unit/stop/", unitStopHandler{conn, cfg})
-	http.Handle("/unit/status/", unitStatusHandler{conn})
+	http.Handle("/unit/status/", unitStatusHandler{conn, cfg})
 
 	// http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
