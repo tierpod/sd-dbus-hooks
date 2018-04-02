@@ -1,0 +1,17 @@
+http:
+  bind: 0.0.0.0:8080
+
+units:
+  - name: test1.service
+    on_active:
+      - logger "test1.service active"
+    on_failed:
+      - logger "test1.service failed"
+    blocked_by:
+      - test2.service
+
+  - name: test2.service
+    on_active:
+      - logger "test1.service active"
+    on_failed:
+      - logger "test2.service.failed"
