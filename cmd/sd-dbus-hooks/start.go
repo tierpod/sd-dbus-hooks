@@ -50,11 +50,6 @@ func start(conn *dbus.Conn, cfg *Config, name string, ch chan<- string) error {
 		return err
 	}
 
-	// units, err := conn.ListUnits()
-	// if err != nil {
-	// 	return err
-	// }
-
 	// check if unit active
 	units, err := conn.ListUnitsByPatterns([]string{"active"}, []string{name})
 	if err != nil {

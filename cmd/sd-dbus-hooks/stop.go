@@ -9,14 +9,24 @@ import (
 
 type unitStopHandler struct {
 	conn *dbus.Conn
+	cfg  *Config
 }
 
 func (h unitStopHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Path[len("/unit/stop/"):]
+
+	// check if unit in config
+	_, err := h.cfg.getUnit(name)
+	if err != nil {
+		log.Printf("[ERROR] %s", err)
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
 	result := make(chan string)
 	log.Printf("[INFO] stopping unit %v", name)
 
-	_, err := h.conn.StopUnit(name, "fail", result)
+	_, err = h.conn.StopUnit(name, "fail", result)
 	if err != nil {
 		log.Printf("[ERROR] %s", err)
 		w.WriteHeader(http.StatusBadRequest)
