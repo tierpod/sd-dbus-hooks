@@ -39,11 +39,11 @@ func main() {
 		log.Fatalf("[ERROR] %v", err)
 	}
 
-	//http.Handle("/unit/start/", unitStartHandler)
-	//http.Handle("/unit/stop/", unitStopHandler)
+	http.Handle("/unit/start/", unitStartHandler{conn})
+	http.Handle("/unit/stop/", unitStopHandler{conn})
 	http.Handle("/unit/status/", unitStatusHandler{conn})
 
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	// http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	log.Printf("[INFO] starting web server on: %v\n", cfg.HTTP.Bind)
 	err = http.ListenAndServe(cfg.HTTP.Bind, nil)
