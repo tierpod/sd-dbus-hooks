@@ -34,6 +34,7 @@ type Unit struct {
 type HTTP struct {
 	Bind         string `yaml:"bind"`
 	LogTimestamp bool   `yaml:"log_timestamp"`
+	XToken       string `yaml:"x_token"`
 }
 
 func LoadConfig(path string) (*Config, error) {

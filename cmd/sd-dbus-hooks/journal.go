@@ -12,13 +12,13 @@ import (
 
 const journalNumEntries = 20
 
-type journalHandler struct {
+type unitJournalHandler struct {
 	conn *dbus.Conn
 	cfg  *Config
 }
 
-func (h journalHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	name := r.URL.Path[len("/journal/"):]
+func (h unitJournalHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	name := r.URL.Path[len("/unit/journal/"):]
 
 	jcfg := sdjournal.JournalReaderConfig{
 		NumFromTail: 20,

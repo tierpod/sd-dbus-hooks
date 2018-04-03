@@ -42,15 +42,17 @@ func main() {
 
 	log.SetFlags(logFlags)
 
+	tokens := newTokenStore(cfg.HTTP.XToken)
+
 	conn, err := dbus.New()
 	if err != nil {
 		log.Fatalf("[ERROR] %v", err)
 	}
 
-	http.Handle("/unit/start/", unitStartHandler{conn, cfg})
-	http.Handle("/unit/stop/", unitStopHandler{conn, cfg})
-	http.Handle("/unit/status/", unitStatusHandler{conn, cfg})
-	http.Handle("/journal/", journalHandler{conn, cfg})
+	http.Handle("/unit/start/", tokens.middleware(unitStartHandler{conn, cfg}))
+	http.Handle("/unit/stop/", tokens.middleware(unitStopHandler{conn, cfg}))
+	http.Handle("/unit/status/", tokens.middleware(unitStatusHandler{conn, cfg}))
+	http.Handle("/unit/journal/", tokens.middleware(unitJournalHandler{conn, cfg}))
 
 	// http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
