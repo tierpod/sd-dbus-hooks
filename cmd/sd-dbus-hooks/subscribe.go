@@ -70,7 +70,7 @@ func (s *subscriber) execute(cmds []string, u *dbus.UnitStatus) {
 	for _, c := range cmds {
 		c = strings.Replace(c, "{unit_name}", u.Name, -1)
 		c = strings.Replace(c, "{unit_state}", u.ActiveState+"/"+u.SubState, -1)
-		log.Printf("[INFO] execute %v", c)
+		log.Printf("[INFO] subscriber: execute %v", c)
 		cc, err := shlex.Split(c)
 		if err != nil {
 			log.Printf("[ERROR] subscriber: %v", err)
