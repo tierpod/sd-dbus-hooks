@@ -1,0 +1,15 @@
+[Unit]
+Description=Systemd dbus hooks
+After=network.target
+
+[Service]
+;Type=notify
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/opt/sd-dbus-hooks
+ExecStart=/opt/sd-dbus-hooks/sd-dbus-hooks -config ./config.yaml
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
