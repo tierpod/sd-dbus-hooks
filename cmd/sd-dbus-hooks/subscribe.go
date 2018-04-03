@@ -24,7 +24,7 @@ func newSubscriber(conn *dbus.Conn, cfg *Config) *subscriber {
 func (s *subscriber) subscribe() {
 	err := s.conn.Subscribe()
 	if err != nil {
-		log.Fatalf("[ERROR] %v", err)
+		log.Fatalf("[ERROR] subscriber: %v", err)
 	}
 
 	chEvents, chErr := s.conn.SubscribeUnits(time.Duration(s.cfg.SubscribeTimeout) * time.Second)
@@ -34,10 +34,14 @@ func (s *subscriber) subscribe() {
 			select {
 			case events := <-chEvents:
 				for _, unit := range events {
+					if unit == nil {
+						log.Printf("[WARN] subscriber: got nil event, ignore")
+						continue
+					}
 					s.processEvent(unit)
 				}
 			case err := <-chErr:
-				log.Printf("[ERROR] %v", err)
+				log.Printf("[ERROR] subscriber: %v", err)
 			}
 		}
 	}()
@@ -50,7 +54,7 @@ func (s *subscriber) processEvent(u *dbus.UnitStatus) {
 		return
 	}
 
-	log.Printf("[INFO] match unit %v, ActiveState %v, SubState %v", u.Name, u.ActiveState, u.SubState)
+	log.Printf("[INFO] subscriber: match unit %v, ActiveState %v, SubState %v", u.Name, u.ActiveState, u.SubState)
 
 	switch u.ActiveState {
 	case "active":
@@ -69,7 +73,7 @@ func (s *subscriber) execute(cmds []string, u *dbus.UnitStatus) {
 		log.Printf("[INFO] execute %v", c)
 		cc, err := shlex.Split(c)
 		if err != nil {
-			log.Printf("[ERROR] %v", err)
+			log.Printf("[ERROR] subscriber: %v", err)
 		}
 
 		command := exec.Command(cc[0])
@@ -78,7 +82,7 @@ func (s *subscriber) execute(cmds []string, u *dbus.UnitStatus) {
 		}
 		err = command.Run()
 		if err != nil {
-			log.Printf("[ERROR] execute failed: %v", err)
+			log.Printf("[ERROR] subscriber: execute failed: %v", err)
 			continue
 		}
 	}
