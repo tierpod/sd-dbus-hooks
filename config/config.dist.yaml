@@ -1,5 +1,6 @@
 http:
   bind: 0.0.0.0:8080
+  log_timestamp: true
 
 subscribe_timeout: 5
 

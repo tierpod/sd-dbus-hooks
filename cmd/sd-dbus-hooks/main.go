@@ -34,6 +34,13 @@ func main() {
 		log.Fatal(err)
 	}
 
+	logFlags := 0
+	if cfg.HTTP.LogTimestamp {
+		logFlags = log.LstdFlags
+	}
+
+	log.SetFlags(logFlags)
+
 	conn, err := dbus.New()
 	if err != nil {
 		log.Fatalf("[ERROR] %v", err)
