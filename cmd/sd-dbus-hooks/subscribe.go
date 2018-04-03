@@ -54,11 +54,11 @@ func (s *subscriber) processEvent(u *dbus.UnitStatus) {
 
 	switch u.ActiveState {
 	case "active":
-		s.execute(unit.OnActive, u)
+		go s.execute(unit.OnActive, u)
 	case "inactive":
-		s.execute(unit.OnInctive, u)
+		go s.execute(unit.OnInctive, u)
 	case "failed":
-		s.execute(unit.OnFailed, u)
+		go s.execute(unit.OnFailed, u)
 	}
 }
 
@@ -76,9 +76,9 @@ func (s *subscriber) execute(cmds []string, u *dbus.UnitStatus) {
 		if len(cc) > 1 {
 			command = exec.Command(cc[0], cc[1:]...)
 		}
-		err = command.Start()
+		err = command.Run()
 		if err != nil {
-			log.Printf("[ERROR] %v", err)
+			log.Printf("[ERROR] execute failed: %v", err)
 			continue
 		}
 	}
