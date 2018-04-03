@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/coreos/go-systemd/daemon"
 	"github.com/coreos/go-systemd/dbus"
 )
 
@@ -55,6 +56,8 @@ func main() {
 	log.Printf("[INFO] subscribe to systemd events with timeout %v\n", cfg.SubscribeTimeout)
 	s := newSubscriber(conn, cfg)
 	s.subscribe()
+
+	daemon.SdNotify(false, daemon.SdNotifyReady)
 
 	log.Printf("[INFO] starting web server on: %v\n", cfg.HTTP.Bind)
 	err = http.ListenAndServe(cfg.HTTP.Bind, nil)

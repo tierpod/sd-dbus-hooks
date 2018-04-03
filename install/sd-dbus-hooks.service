@@ -3,8 +3,8 @@ Description=Systemd dbus hooks
 After=network.target
 
 [Service]
-;Type=notify
-Type=simple
+Type=notify
+;Type=simple
 User=root
 Group=root
 WorkingDirectory=/opt/sd-dbus-hooks
