@@ -22,8 +22,7 @@ $(document).ready(function(){
   };
 
   if (typeof token == "undefined" || !token) {
-    //var token = prompt("enter token");
-    token = "123";
+    var token = prompt("enter token");
   }
 
   getUnits();
