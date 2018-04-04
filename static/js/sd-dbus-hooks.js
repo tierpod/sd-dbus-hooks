@@ -90,4 +90,8 @@ $(document).ready(function(){
       beforeSend: setHeader
     });
   });
+
+  $(document).on("click", "#reload-btn", function() {
+    location.reload();
+  });
 });
