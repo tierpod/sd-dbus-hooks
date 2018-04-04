@@ -36,10 +36,12 @@ func (h unitJournalHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("[INFO] journal: show last %v entries for %v", h.cfg.JournalNumEntries, name)
+	fmt.Fprintf(w, "=== begin journal ===\n")
 	scanner := bufio.NewScanner(jr)
 	for scanner.Scan() {
 		fmt.Fprintf(w, "%v\n", scanner.Text())
 	}
+	fmt.Fprintf(w, "=== end journal ===\n")
 
 	if err := scanner.Err(); err != nil {
 		log.Printf("[ERROR] journal: %v", err)
