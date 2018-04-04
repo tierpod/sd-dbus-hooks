@@ -54,6 +54,14 @@ http entrypoints
 curl -H 'X-Token: 123' localhost:8080/unit/status/rsyslog.service
 ```
 
+Сборка
+------
+
+```bash
+go get github.com/tierpod/sd-dbus-hooks
+make bin/sd-dbus-hooks
+```
+
 Благодарности
 -------------
 
