@@ -7,10 +7,13 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+const defaultJournalNumEntries = 20
+
 type Config struct {
 	Units             []Unit `yaml:"units"`
 	HTTP              HTTP   `yaml:"http"`
 	SubscribeInterval int    `yaml:"subscribe_interval"`
+	JournalNumEntries uint64 `yaml:"journal_num_entries"`
 }
 
 func (c *Config) getUnit(name string) (Unit, error) {
@@ -56,6 +59,11 @@ func LoadConfig(path string) (*Config, error) {
 	err = yaml.Unmarshal(data, &c)
 	if err != nil {
 		return nil, err
+	}
+
+	// use default value if journal_num_entries is not set
+	if c.JournalNumEntries == 0 {
+		c.JournalNumEntries = defaultJournalNumEntries
 	}
 
 	return &c, err

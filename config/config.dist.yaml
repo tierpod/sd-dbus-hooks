@@ -8,6 +8,8 @@ http:
 
 # receive all changed units every interval over dbus
 subscribe_interval: 5
+# show last N journal entries from end
+journal_num_entries: 20
 
 # units list
 units:
