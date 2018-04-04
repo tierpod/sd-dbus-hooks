@@ -16,13 +16,21 @@ type unitStartHandler struct {
 func (h unitStartHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Path[len("/unit/start/"):]
 
-	result := make(chan string)
-	log.Printf("[INFO] starting unit %v", name)
-
-	err := start(h.conn, h.cfg, name, result)
+	// check if unit in config
+	unit, err := h.cfg.getUnit(name)
 	if err != nil {
 		log.Printf("[ERROR] %s", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	result := make(chan string)
+	log.Printf("[INFO] starting unit %v", name)
+
+	err = start(h.conn, h.cfg, unit, result)
+	if err != nil {
+		log.Printf("[ERROR] %s", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -33,43 +41,37 @@ func (h unitStartHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	case "timeout", "failed":
 		log.Printf("[ERROR] unit %v not started: %v", name, status)
-		http.Error(w, status, http.StatusBadRequest)
+		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
 	return
 }
 
-func start(conn *dbus.Conn, cfg *Config, name string, ch chan<- string) error {
-	// check if unit in config
-	unit, err := cfg.getUnit(name)
-	if err != nil {
-		return err
-	}
-
+func start(conn *dbus.Conn, cfg *Config, u Unit, ch chan<- string) error {
 	// check if unit active
-	units, err := conn.ListUnitsByPatterns([]string{"active"}, []string{name})
+	units, err := conn.ListUnitsByPatterns([]string{"active"}, []string{u.Name})
 	if err != nil {
 		return err
 	}
 
 	if len(units) != 0 {
-		return fmt.Errorf("unit %v already active", name)
+		return fmt.Errorf("unit %v already active", u.Name)
 	}
 
-	if len(unit.BlockedBy) > 0 {
+	if len(u.BlockedBy) > 0 {
 		// check if unit blocked by other active unit
-		blockUnits, err := conn.ListUnitsByPatterns([]string{"active"}, unit.BlockedBy)
+		blockUnits, err := conn.ListUnitsByPatterns([]string{"active"}, u.BlockedBy)
 		if err != nil {
 			return err
 		}
 
 		if len(blockUnits) != 0 {
-			return fmt.Errorf("unit %v blocked by active units %+v", name, blockUnits)
+			return fmt.Errorf("unit %v blocked by active units %+v", u.Name, blockUnits)
 		}
 	}
 
 	// start unit
-	_, err = conn.StartUnit(name, "fail", ch)
+	_, err = conn.StartUnit(u.Name, "fail", ch)
 	if err != nil {
 		return err
 	}

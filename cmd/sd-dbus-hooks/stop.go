@@ -29,7 +29,7 @@ func (h unitStopHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	_, err = h.conn.StopUnit(name, "fail", result)
 	if err != nil {
 		log.Printf("[ERROR] %s", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -40,7 +40,7 @@ func (h unitStopHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	case "timeout", "failed":
 		log.Printf("[ERROR] unit %v not stopped: %v", name, status)
-		http.Error(w, status, http.StatusBadRequest)
+		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
 	return

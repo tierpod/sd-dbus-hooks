@@ -61,7 +61,7 @@ func main() {
 		http.Handle("/webui/", http.StripPrefix("/webui/", http.FileServer(http.Dir("webui"))))
 	}
 
-	log.Printf("[INFO] subscribe to systemd events with timeout %v\n", cfg.SubscribeTimeout)
+	log.Printf("[INFO] subscribe to systemd events with interval %v\n", cfg.SubscribeInterval)
 	s := newSubscriber(conn, cfg)
 	s.subscribe()
 

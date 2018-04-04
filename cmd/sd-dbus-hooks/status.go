@@ -37,14 +37,14 @@ func (h unitStatusHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	units, unitsErr := h.conn.ListUnitsByPatterns([]string{"active", "inactive", "failed"}, matchFilter)
 	if unitsErr != nil {
 		log.Printf("[ERROR] %s", unitsErr)
-		http.Error(w, unitsErr.Error(), http.StatusBadRequest)
+		http.Error(w, unitsErr.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	js, err := json.Marshal(units)
 	if err != nil {
 		log.Printf("[ERROR] %s", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

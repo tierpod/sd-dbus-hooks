@@ -27,7 +27,7 @@ func (s *subscriber) subscribe() {
 		log.Fatalf("[ERROR] subscriber: %v", err)
 	}
 
-	chEvents, chErr := s.conn.SubscribeUnits(time.Duration(s.cfg.SubscribeTimeout) * time.Second)
+	chEvents, chErr := s.conn.SubscribeUnits(time.Duration(s.cfg.SubscribeInterval) * time.Second)
 
 	go func() {
 		for {

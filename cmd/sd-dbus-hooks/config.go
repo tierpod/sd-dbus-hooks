@@ -8,9 +8,9 @@ import (
 )
 
 type Config struct {
-	Units            []Unit `yaml:"units"`
-	HTTP             HTTP   `yaml:"http"`
-	SubscribeTimeout int    `yaml:"subscribe_timeout"`
+	Units             []Unit `yaml:"units"`
+	HTTP              HTTP   `yaml:"http"`
+	SubscribeInterval int    `yaml:"subscribe_interval"`
 }
 
 func (c *Config) getUnit(name string) (Unit, error) {
