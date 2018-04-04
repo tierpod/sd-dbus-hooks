@@ -54,7 +54,12 @@ func main() {
 	http.Handle("/unit/status/", tokens.middleware(unitStatusHandler{conn, cfg}))
 	http.Handle("/unit/journal/", tokens.middleware(unitJournalHandler{conn, cfg}))
 
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	if _, err := os.Stat("webui"); os.IsNotExist(err) {
+		log.Printf("[WARN] webui directory is not exist, skip starting webui")
+	} else {
+		log.Printf("[INFO] starting webui")
+		http.Handle("/webui/", http.StripPrefix("/webui/", http.FileServer(http.Dir("webui"))))
+	}
 
 	log.Printf("[INFO] subscribe to systemd events with timeout %v\n", cfg.SubscribeTimeout)
 	s := newSubscriber(conn, cfg)
@@ -67,14 +72,4 @@ func main() {
 	if err != nil {
 		log.Fatalf("[ERROR] %v", err)
 	}
-}
-
-func contains(s string, ss []string) bool {
-	for _, i := range ss {
-		if i == s {
-			return true
-		}
-	}
-
-	return false
 }
