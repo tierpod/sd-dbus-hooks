@@ -1,0 +1,74 @@
+package main
+
+import (
+	"errors"
+	"log"
+	"path"
+
+	"github.com/coreos/go-systemd/dbus"
+)
+
+func listUnitsByPatterns(conn *dbus.Conn, states []string, patterns []string) ([]dbus.UnitStatus, error) {
+	var result []dbus.UnitStatus
+
+	units, err := conn.ListUnits()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, unit := range units {
+		if contains(patterns, unit.Name) && contains(states, unit.ActiveState) {
+			result = append(result, unit)
+			continue
+		}
+	}
+
+	// systemd can doesn't show all loaded units in some cases (if there's no reason to keep it in memory)
+	// https://github.com/systemd/systemd/issues/5063
+	//
+	// so, list all units files for matched names and add it to results
+	unitFiles, err := conn.ListUnitFiles()
+	if err != nil {
+		return nil, err
+	}
+
+UNIT_FILES_LOOP:
+	for _, unitFile := range unitFiles {
+		name := path.Base(unitFile.Path)
+		// skip unit file if result already exist
+		for _, v := range result {
+			if name == v.Name {
+				log.Printf("[DEBUG] unit %v already in results", v.Name)
+				continue UNIT_FILES_LOOP
+			}
+		}
+		if contains(patterns, name) {
+			us := dbus.UnitStatus{
+				Name:        name,
+				Description: "",
+				LoadState:   "not in memory",
+				ActiveState: "not in memory",
+				SubState:    unitFile.Type,
+			}
+			result = append(result, us)
+			continue
+		}
+	}
+
+	if len(result) == 0 {
+		return result, errors.New("units not found")
+	}
+
+	return result, nil
+}
+
+// return true if string `v` contains in slice `s`
+func contains(s []string, v string) bool {
+	for _, i := range s {
+		if i == v {
+			return true
+		}
+	}
+
+	return false
+}
