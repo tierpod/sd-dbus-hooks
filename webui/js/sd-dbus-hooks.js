@@ -32,20 +32,20 @@ $(document).ready(function(){
       switch(item.ActiveState) {
         case "active":
           badge = '<span class="badge badge-success">' + item.ActiveState + '</span>';
-          actions = '<button type="button" class="btn btn-sm btn-danger" id="stop-btn" data-item="' + item.Name + '">stop</button>'
+          actions = '<button type="button" class="btn btn-sm btn-danger" id="stop-btn" data-item="' + item.Name + '">stop</button>';
           break
         case "inactive":
           badge = '<span class="badge badge-secondary">' + item.ActiveState + '</span>';
-          actions = '<button type="button" class="btn btn-sm btn-danger" id="start-btn" data-item="' + item.Name + '">start</button>'
+          actions = '<button type="button" class="btn btn-sm btn-primary" id="start-btn" data-item="' + item.Name + '">start</button>';
           break
         case "failed":
           badge = '<span class="badge badge-danger">' + item.ActiveState + '</span>';
-          actions = '<button type="button" class="btn btn-sm btn-danger" id="s-btn" data-item="' + item.Name + '">stop</button>'
+          actions = '<button type="button" class="btn btn-sm btn-danger" id="start-btn" data-item="' + item.Name + '">start</button>';
           break
         default:
           badge = '<span class="badge badge-warning">' + item.ActiveState + '</span>';
           actions = '<button type="button" class="btn btn-sm btn-primary" id="start-btn" data-item="' + item.Name + '">start</button>' +
-                    '<button type="button" class="btn btn-sm btn-danger" id="stop-btn" data-item="' + item.Name + '">stop</button>'
+                    '<button type="button" class="btn btn-sm btn-danger" id="stop-btn" data-item="' + item.Name + '">stop</button>';
           break
       };
 
