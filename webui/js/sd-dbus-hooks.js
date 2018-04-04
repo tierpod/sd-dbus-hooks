@@ -29,21 +29,33 @@ $(document).ready(function(){
 
   function unitsToTable(data) {
     $.each(data, function(i, item) {
-      if (item.ActiveState == "active") {
-        badge = '<span class="badge badge-success">' + item.ActiveState + '</span>';
-      } else if (item.ActiveState == "failed") {
-        badge = '<span class="badge badge-danger">' + item.ActiveState + '</span>';
-      } else {
-        badge = '<span class="badge badge-warning">' + item.ActiveState + '</span>';
+      switch(item.ActiveState) {
+        case "active":
+          badge = '<span class="badge badge-success">' + item.ActiveState + '</span>';
+          actions = '<button type="button" class="btn btn-sm btn-danger" id="stop-btn" data-item="' + item.Name + '">stop</button>'
+          break
+        case "inactive":
+          badge = '<span class="badge badge-secondary">' + item.ActiveState + '</span>';
+          actions = '<button type="button" class="btn btn-sm btn-danger" id="start-btn" data-item="' + item.Name + '">start</button>'
+          break
+        case "failed":
+          badge = '<span class="badge badge-danger">' + item.ActiveState + '</span>';
+          actions = '<button type="button" class="btn btn-sm btn-danger" id="s-btn" data-item="' + item.Name + '">stop</button>'
+          break
+        default:
+          badge = '<span class="badge badge-warning">' + item.ActiveState + '</span>';
+          actions = '<button type="button" class="btn btn-sm btn-primary" id="start-btn" data-item="' + item.Name + '">start</button>' +
+                    '<button type="button" class="btn btn-sm btn-danger" id="stop-btn" data-item="' + item.Name + '">stop</button>'
+          break
       };
+
       $("#units-table").append(
         '<tr class="unit-item">' +
         '<td>' + item.Name + '</td>' +
         '<td>' + badge + '</td>' +
         '<td>' +
         '  <div class="btn-group" role="group" aria-label="unit-actions">' +
-        '  <button type="button" class="btn btn-sm btn-primary" id="start-btn" data-item="' + item.Name + '">start</button>' +
-        '  <button type="button" class="btn btn-sm btn-danger" id="stop-btn" data-item="' + item.Name + '">stop</button>' +
+        actions +
         '  </div>' +
         '  <button type="button" class="btn btn-sm btn-info" id="journal-btn" data-item="' + item.Name + '">journal</button>' +
         '</td>' +
