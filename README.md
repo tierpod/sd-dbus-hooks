@@ -35,8 +35,8 @@ http entrypoints
 * **/unit/status/** - возвращает json, содержащий статус всех юнитов, описанных в секции units
   конфигурации
 * **/unit/status/{unit_name}** - возвращает json, содержащий статус юнита
-* **/unit/start/{unit_name}** - возвращает StatusOK, если юнит запущен успешно
-* **/unit/stop/{unit_name}** - возвращает StatusOK, если юнит остановлен успешно
+* **/unit/start/{unit_name}** - запускает unit и возвращает StatusOK, если юнит запущен успешно
+* **/unit/stop/{unit_name}** - останавливает unit и возвращает StatusOK, если юнит остановлен успешно
 * **/unit/journal/{unit_name}** - возвращает text, содержащий последние 20 записей из journalctl по
   этому юниту.
 
