@@ -1,18 +1,32 @@
 $(document).ready(function(){
   function setHeader(xhr) {
-    xhr.setRequestHeader("X-Token", "123");
+    xhr.setRequestHeader("X-Token", token);
   }
 
-  $.ajax({
-    url: "/unit/status/",
-    type: "GET",
-    dataType: "json",
-    success: function(data) { 
-      unitsToTable(data);
-      $("#navbar-title").html("Systemd dbus hooks (" + data.length + ")");
-     },
-    beforeSend: setHeader
-  });
+  function reloadTable() {
+    $(".unit-item").remove();
+    getUnits();
+  }
+
+  function getUnits() {
+    $.ajax({
+      url: "/unit/status/",
+      type: "GET",
+      dataType: "json",
+      success: function(data) { 
+        unitsToTable(data);
+        $("#navbar-title").html("Systemd dbus hooks (" + data.length + ")");
+       },
+      beforeSend: setHeader
+    });
+  };
+
+  if (typeof token == "undefined" || !token) {
+    //var token = prompt("enter token");
+    token = "123";
+  }
+
+  getUnits();
 
   function unitsToTable(data) {
     $.each(data, function(i, item) {
@@ -24,7 +38,7 @@ $(document).ready(function(){
         badge = '<span class="badge badge-warning">' + item.ActiveState + '</span>';
       };
       $("#units-table").append(
-        '<tr>' +
+        '<tr class="unit-item">' +
         '<td>' + item.Name + '</td>' +
         '<td>' + badge + '</td>' +
         '<td>' +
@@ -47,7 +61,7 @@ $(document).ready(function(){
       type: "GET",
       success: function(data) {
         console.log(value + " started");
-        location.reload();
+        reloadTable();
       },
       error: function(data) {
         alert("server reply: " + data.status + "/" + data.statusText);
@@ -65,7 +79,7 @@ $(document).ready(function(){
       type: "GET",
       success: function(data) {
         console.log(value + " stopped");
-        location.reload();
+        reloadTable();
       },
       error: function(data) {
         alert("server reply: " + data.status + "/" + data.statusText);
@@ -92,6 +106,6 @@ $(document).ready(function(){
   });
 
   $(document).on("click", "#reload-btn", function() {
-    location.reload();
+    reloadTable();
   });
 });
