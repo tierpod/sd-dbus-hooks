@@ -7,7 +7,10 @@ $(document).ready(function(){
     url: "/unit/status/",
     type: "GET",
     dataType: "json",
-    success: function(data) { unitsToTable(data); },
+    success: function(data) { 
+      unitsToTable(data);
+      $("#navbar-title").html("Systemd dbus hooks (" + data.length + ")");
+     },
     beforeSend: setHeader
   });
 
@@ -26,10 +29,10 @@ $(document).ready(function(){
         '<td>' + badge + '</td>' +
         '<td>' +
         '  <div class="btn-group" role="group" aria-label="unit-actions">' +
-        '  <button type="button" class="btn btn btn-primary" id="start-btn" data-item="' + item.Name + '">start</button>' +
-        '  <button type="button" class="btn btn-danger" id="stop-btn" data-item="' + item.Name + '">stop</button>' +
+        '  <button type="button" class="btn btn-sm btn-primary" id="start-btn" data-item="' + item.Name + '">start</button>' +
+        '  <button type="button" class="btn btn-sm btn-danger" id="stop-btn" data-item="' + item.Name + '">stop</button>' +
         '  </div>' +
-        '  <button type="button" class="btn btn-info" id="journal-btn" data-item="' + item.Name + '">journal</button>' +
+        '  <button type="button" class="btn btn-sm btn-info" id="journal-btn" data-item="' + item.Name + '">journal</button>' +
         '</td>' +
         '</tr>')
     });
@@ -40,9 +43,15 @@ $(document).ready(function(){
     value = $(self).data("item");
     $.ajax({
       url: "/unit/start/" + value,
-      dataType: "json",
+      dataType: "text",
       type: "GET",
-      success: function(data) { console.log(value + " started"); },
+      success: function(data) {
+        console.log(value + " started");
+        location.reload();
+      },
+      error: function(data) {
+        alert("server reply: " + data.status + "/" + data.statusText);
+      },
       beforeSend: setHeader
     });
   });
@@ -52,9 +61,15 @@ $(document).ready(function(){
     value = $(self).data("item");
     $.ajax({
       url: "/unit/stop/" + value,
-      dataType: "json",
+      dataType: "text",
       type: "GET",
-      success: function(data) { console.log(value + " stopped"); },
+      success: function(data) {
+        console.log(value + " stopped");
+        location.reload();
+      },
+      error: function(data) {
+        alert("server reply: " + data.status + "/" + data.statusText);
+      },
       beforeSend: setHeader
     });
   });
@@ -67,11 +82,7 @@ $(document).ready(function(){
       dataType: "text",
       type: "GET",
       success: function(data) {
-        // $("#journal-title").empty();
-        // $("#journal-title").append("journal for " + value);
         $("#journal-title").html("journal for " + value);
-        // $("#journal-data").empty();
-        // $("#journal-data").append("<pre>" + data + "</pre>");
         $("#journal-data").html("<pre>" + data + "</pre>");
         $("#journal-modal").modal("handleUpdate");
         $("#journal-modal").modal("show");
