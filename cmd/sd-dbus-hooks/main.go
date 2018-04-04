@@ -53,9 +53,8 @@ func main() {
 	http.Handle("/unit/stop/", tokens.middleware(unitStopHandler{conn, cfg}))
 	http.Handle("/unit/status/", tokens.middleware(unitStatusHandler{conn, cfg}))
 	http.Handle("/unit/journal/", tokens.middleware(unitJournalHandler{conn, cfg}))
-	http.Handle("/units", tokens.middleware(unitsHandler{cfg}))
 
-	// http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	log.Printf("[INFO] subscribe to systemd events with timeout %v\n", cfg.SubscribeTimeout)
 	s := newSubscriber(conn, cfg)

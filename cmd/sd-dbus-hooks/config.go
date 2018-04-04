@@ -23,6 +23,15 @@ func (c *Config) getUnit(name string) (Unit, error) {
 	return Unit{}, fmt.Errorf("unit %v not found in config", name)
 }
 
+func (c *Config) listUnits() []string {
+	var units []string
+	for _, unit := range c.Units {
+		units = append(units, unit.Name)
+	}
+
+	return units
+}
+
 type Unit struct {
 	Name      string   `yaml:"name"`
 	OnActive  []string `yaml:"on_active"`
