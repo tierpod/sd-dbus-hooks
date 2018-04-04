@@ -31,19 +31,19 @@ $(document).ready(function(){
     $.each(data, function(i, item) {
       switch(item.ActiveState) {
         case "active":
-          badge = '<span class="badge badge-success">' + item.ActiveState + ' / ' + item.SubState + '</span>';
+          badgeClass = 'badge-success';
           actions = '<button type="button" class="btn btn-sm btn-danger" id="stop-btn" data-item="' + item.Name + '">stop</button>';
           break
         case "inactive":
-          badge = '<span class="badge badge-secondary">' + item.ActiveState + ' / ' + item.SubState + '</span>';
+          badgeClass = 'badge-secondary';
           actions = '<button type="button" class="btn btn-sm btn-primary" id="start-btn" data-item="' + item.Name + '">start</button>';
           break
         case "failed":
-          badge = '<span class="badge badge-danger">' + item.ActiveState + ' / ' + item.SubState + '</span>';
+          badgeClass = 'badge-danger';
           actions = '<button type="button" class="btn btn-sm btn-danger" id="start-btn" data-item="' + item.Name + '">start</button>';
           break
         default:
-          badge = '<span class="badge badge-warning">' + item.ActiveState + ' / ' + item.SubState + '</span>';
+          badgeClass = 'badge-warning';
           actions = '<button type="button" class="btn btn-sm btn-primary" id="start-btn" data-item="' + item.Name + '">start</button>' +
                     '<button type="button" class="btn btn-sm btn-danger" id="stop-btn" data-item="' + item.Name + '">stop</button>';
           break
@@ -52,7 +52,7 @@ $(document).ready(function(){
       $("#units-table").append(
         '<tr class="unit-item">' +
         '<td data-toggle="tooltip" data-placement="bottom" title="' + item.Description + '">' + item.Name + '</td>' +
-        '<td>' + badge + '</td>' +
+        '<td><span class="badge ' + badgeClass + '">' + item.ActiveState + ' / ' + item.SubState + '</span></td>' +
         '<td>' +
         '  <div class="btn-group" role="group" aria-label="unit-actions">' +
         actions +
