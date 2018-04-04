@@ -1,10 +1,8 @@
 BINARIES  := bin/sd-dbus-hooks
 
-VERSION ?= 0.1
-GITHASH := $(shell git rev-parse --short HEAD)
-FULLVER := $(VERSION)-git.$(shell git rev-parse --abbrev-ref HEAD).$(shell git rev-parse --short HEAD)
+VERSION := $(shell git describe --tags)
 
-LDFLAGS := -ldflags "-X main.version=$(FULLVER)"
+LDFLAGS := -ldflags "-X main.version=$(VERSION)"
 
 .PHONY: lint
 lint:
@@ -18,10 +16,6 @@ build: lint $(BINARIES)
 
 $(BINARIES):
 	go build -v $(LDFLAGS) -o $@ cmd/$(notdir $@)/*.go
-
-.PHONY: tag
-tag:
-	git tag -a -m "Release version" $(VERSION)
 
 .PHONY: clean
 clean:
