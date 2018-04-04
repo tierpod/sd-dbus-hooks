@@ -22,7 +22,7 @@ func (h unitStartHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	err := start(h.conn, h.cfg, name, result)
 	if err != nil {
 		log.Printf("[ERROR] %s", err)
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -31,13 +31,9 @@ func (h unitStartHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case "done":
 		log.Printf("[INFO] unit %v started successfull", name)
 		return
-	case "timeout":
-		log.Printf("[ERROR] unit %v not started: timeout error", name)
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	case "failed":
-		log.Printf("[ERROR] unot %v not started: failed", name)
-		w.WriteHeader(http.StatusBadRequest)
+	case "timeout", "failed":
+		log.Printf("[ERROR] unit %v not started: %v", name, status)
+		http.Error(w, status, http.StatusBadRequest)
 		return
 	}
 	return

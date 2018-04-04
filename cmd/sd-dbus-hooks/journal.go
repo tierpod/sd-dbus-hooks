@@ -33,7 +33,7 @@ func (h unitJournalHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	jr, err := sdjournal.NewJournalReader(jcfg)
 	if err != nil {
 		log.Printf("[ERROR] journal: %v", err)
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -45,7 +45,7 @@ func (h unitJournalHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if err := scanner.Err(); err != nil {
 		log.Printf("[ERROR] journal: %v", err)
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 }

@@ -19,7 +19,7 @@ func (h unitStopHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	_, err := h.cfg.getUnit(name)
 	if err != nil {
 		log.Printf("[ERROR] %s", err)
-		w.WriteHeader(http.StatusForbidden)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -29,7 +29,7 @@ func (h unitStopHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	_, err = h.conn.StopUnit(name, "fail", result)
 	if err != nil {
 		log.Printf("[ERROR] %s", err)
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -38,13 +38,9 @@ func (h unitStopHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case "done":
 		log.Printf("[INFO] unit %v stopped successfull", name)
 		return
-	case "timeout":
-		log.Printf("[ERROR] unit %v not stopped: timeout error", name)
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	case "failed":
-		log.Printf("[ERROR] unit %v not stopped: failed", name)
-		w.WriteHeader(http.StatusBadRequest)
+	case "timeout", "failed":
+		log.Printf("[ERROR] unit %v not stopped: %v", name, status)
+		http.Error(w, status, http.StatusBadRequest)
 		return
 	}
 	return

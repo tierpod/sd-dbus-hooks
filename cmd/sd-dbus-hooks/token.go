@@ -14,7 +14,7 @@ func (t *tokenStore) middleware(next http.Handler) http.Handler {
 		token := r.Header.Get("X-Token")
 		if t.token == "" || t.token != token {
 			log.Printf("[ERROR] xtoken: forbidden request from %v to %v: wrong X-Token header: \"%v\"", r.RemoteAddr, r.URL.Path, token)
-			w.WriteHeader(http.StatusForbidden)
+			http.Error(w, "forbidden", http.StatusForbidden)
 			return
 		}
 
