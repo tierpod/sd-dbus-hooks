@@ -1,9 +1,8 @@
 package main
 
 import (
-	"errors"
-	"log"
 	"path"
+	"reflect"
 
 	"github.com/coreos/go-systemd/dbus"
 )
@@ -23,40 +22,39 @@ func listUnitsByPatterns(conn *dbus.Conn, states []string, patterns []string) ([
 		}
 	}
 
-	// systemd can doesn't show all loaded units in some cases (if there's no reason to keep it in memory)
-	// https://github.com/systemd/systemd/issues/5063
-	//
-	// so, list all units files for matched names and add it to results
-	unitFiles, err := conn.ListUnitFiles()
-	if err != nil {
-		return nil, err
-	}
+	// do not need to list unit files if we search only "active" and "activating" units
+	if !reflect.DeepEqual(states, []string{"active", "activating"}) {
+		// systemd can doesn't show all loaded units in some cases (if there's no reason to keep it in memory)
+		// https://github.com/systemd/systemd/issues/5063
+		//
+		// so, list all units files for matched names and add it to results
+		unitFiles, err := conn.ListUnitFiles()
+		if err != nil {
+			return nil, err
+		}
 
-UNIT_FILES_LOOP:
-	for _, unitFile := range unitFiles {
-		name := path.Base(unitFile.Path)
-		// skip unit file if result already exist
-		for _, v := range result {
-			if name == v.Name {
-				log.Printf("[DEBUG] unit %v already in results", v.Name)
-				continue UNIT_FILES_LOOP
+	UNIT_FILES_LOOP:
+		for _, unitFile := range unitFiles {
+			name := path.Base(unitFile.Path)
+			// skip unit file if result already exist
+			for _, v := range result {
+				if name == v.Name {
+					// log.Printf("[DEBUG] unit %v already in results", v.Name)
+					continue UNIT_FILES_LOOP
+				}
+			}
+			if contains(patterns, name) {
+				us := dbus.UnitStatus{
+					Name:        name,
+					Description: "",
+					LoadState:   "not in memory",
+					ActiveState: "not in memory",
+					SubState:    unitFile.Type,
+				}
+				result = append(result, us)
+				continue
 			}
 		}
-		if contains(patterns, name) {
-			us := dbus.UnitStatus{
-				Name:        name,
-				Description: "",
-				LoadState:   "not in memory",
-				ActiveState: "not in memory",
-				SubState:    unitFile.Type,
-			}
-			result = append(result, us)
-			continue
-		}
-	}
-
-	if len(result) == 0 {
-		return result, errors.New("units not found")
 	}
 
 	return result, nil
