@@ -75,7 +75,7 @@ $(document).ready(function(){
         reloadTable();
       },
       error: function(data) {
-        alert("server reply: " + data.status + "/" + data.statusText);
+        alert("server reply: " + data.status + "/" + data.statusText + "\n" + data.responseText);
       },
       beforeSend: setHeader
     });
@@ -93,7 +93,7 @@ $(document).ready(function(){
         reloadTable();
       },
       error: function(data) {
-        alert("server reply: " + data.status + "/" + data.statusText);
+        alert("server reply: " + data.status + "/" + data.statusText + "\n" + data.responseText);
       },
       beforeSend: setHeader
     });
