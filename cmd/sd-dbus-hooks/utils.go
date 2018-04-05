@@ -23,7 +23,7 @@ func listUnitsByPatterns(conn *dbus.Conn, states []string, patterns []string) ([
 	}
 
 	// do not need to list unit files if we search only "active" and "activating" units
-	if !reflect.DeepEqual(states, []string{"active", "activating"}) {
+	if !reflect.DeepEqual(states, []string{sdStateActive, sdStateActivating}) {
 		// systemd can doesn't show all loaded units in some cases (if there's no reason to keep it in memory)
 		// https://github.com/systemd/systemd/issues/5063
 		//

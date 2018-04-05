@@ -50,7 +50,7 @@ func (h unitStartHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func start(conn *dbus.Conn, cfg *Config, u Unit, ch chan<- string) error {
 	// check if unit active or activating
 	// units, err := conn.ListUnitsByPatterns([]string{"active"}, []string{u.Name})
-	units, err := listUnitsByPatterns(conn, []string{"active", "activating"}, []string{u.Name})
+	units, err := listUnitsByPatterns(conn, []string{sdStateActive, sdStateActivating}, []string{u.Name})
 	if err != nil {
 		return err
 	}
@@ -62,7 +62,7 @@ func start(conn *dbus.Conn, cfg *Config, u Unit, ch chan<- string) error {
 	if len(u.BlockedBy) > 0 {
 		// check if unit blocked by other active or activating unit
 		// blockUnits, err := conn.ListUnitsByPatterns([]string{"active"}, u.BlockedBy)
-		blockUnits, err := listUnitsByPatterns(conn, []string{"active", "activating"}, u.BlockedBy)
+		blockUnits, err := listUnitsByPatterns(conn, []string{sdStateActive, sdStateActivating}, u.BlockedBy)
 		if err != nil {
 			return err
 		}

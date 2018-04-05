@@ -63,11 +63,11 @@ func (s *subscriber) processEvent(u *dbus.UnitStatus) {
 	}
 
 	switch u.ActiveState {
-	case "active", "activating":
+	case sdStateActive, sdStateActivating:
 		go s.execute(unit.OnActive, u)
-	case "inactive", "deactivating":
+	case sdStateInactive, sdStateDeactivating:
 		go s.execute(unit.OnInctive, u)
-	case "failed":
+	case sdStateFailed:
 		go s.execute(unit.OnFailed, u)
 	}
 }

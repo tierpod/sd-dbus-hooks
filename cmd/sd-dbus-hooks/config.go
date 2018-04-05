@@ -7,7 +7,19 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-const defaultJournalNumEntries = 20
+const (
+	defaultJournalNumEntries = 20
+	sdStateActive            = "active"
+	sdStateActivating        = "activating"
+	sdStateInactive          = "inactive"
+	sdStateDeactivating      = "deactivating"
+	sdStateFailed            = "failed"
+	sdStateReloading         = "reloading"
+)
+
+var (
+	sdStatesAll = []string{sdStateActive, sdStateActivating, sdStateInactive, sdStateDeactivating, sdStateFailed, sdStateReloading}
+)
 
 type Config struct {
 	Units             []Unit `yaml:"units"`

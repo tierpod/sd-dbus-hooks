@@ -38,7 +38,7 @@ func (h unitStatusHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// ListUnitsByPatterns is not available on systemd-219 (centos7)
 	//units, unitsErr := h.conn.ListUnitsByPatterns([]string{"active", "inactive", "failed"}, matchFilter)
 
-	units, unitsErr := listUnitsByPatterns(h.conn, []string{"active", "inactive", "failed"}, matchFilter)
+	units, unitsErr := listUnitsByPatterns(h.conn, sdStatesAll, matchFilter)
 	if unitsErr != nil {
 		log.Printf("[ERROR] %s", unitsErr)
 		http.Error(w, unitsErr.Error(), http.StatusInternalServerError)
