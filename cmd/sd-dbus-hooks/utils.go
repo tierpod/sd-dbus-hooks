@@ -47,8 +47,8 @@ func listUnitsByPatterns(conn *dbus.Conn, states []string, patterns []string) ([
 				us := dbus.UnitStatus{
 					Name:        name,
 					Description: "",
-					LoadState:   "not in memory",
-					ActiveState: "not in memory",
+					LoadState:   sdStateNotInMemory,
+					ActiveState: sdStateNotInMemory,
 					SubState:    unitFile.Type,
 				}
 				result = append(result, us)

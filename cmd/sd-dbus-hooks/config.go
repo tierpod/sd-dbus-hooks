@@ -15,6 +15,7 @@ const (
 	sdStateDeactivating      = "deactivating"
 	sdStateFailed            = "failed"
 	sdStateReloading         = "reloading"
+	sdStateNotInMemory       = "not in memory"
 )
 
 var (
