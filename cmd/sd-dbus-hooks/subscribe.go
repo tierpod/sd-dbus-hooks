@@ -57,9 +57,9 @@ func (s *subscriber) processEvent(u *dbus.UnitStatus) {
 	log.Printf("[INFO] subscriber: match unit %v, ActiveState %v, SubState %v", u.Name, u.ActiveState, u.SubState)
 
 	switch u.ActiveState {
-	case "active":
+	case "active", "activating":
 		go s.execute(unit.OnActive, u)
-	case "inactive":
+	case "inactive", "deactivating":
 		go s.execute(unit.OnInctive, u)
 	case "failed":
 		go s.execute(unit.OnFailed, u)
