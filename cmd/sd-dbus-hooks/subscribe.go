@@ -13,8 +13,9 @@ import (
 )
 
 type subscriber struct {
-	conn *dbus.Conn
-	cfg  *Config
+	conn        *dbus.Conn
+	cfg         *Config
+	initialized []string
 }
 
 func newSubscriber(conn *dbus.Conn, cfg *Config) *subscriber {
@@ -55,6 +56,11 @@ func (s *subscriber) processEvent(u *dbus.UnitStatus) {
 	}
 
 	log.Printf("[INFO] subscriber: match unit %v, ActiveState %v, SubState %v", u.Name, u.ActiveState, u.SubState)
+	if !contains(s.initialized, unit.Name) {
+		log.Printf("[INFO] subscriber: ignore the first received event on initialization")
+		s.initialized = append(s.initialized, unit.Name)
+		return
+	}
 
 	switch u.ActiveState {
 	case "active", "activating":
