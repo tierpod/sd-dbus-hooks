@@ -28,20 +28,34 @@ func (s *subscriber) subscribe() {
 		log.Fatalf("[ERROR] subscriber: %v", err)
 	}
 
-	chEvents, chErr := s.conn.SubscribeUnits(time.Duration(s.cfg.SubscribeInterval) * time.Second)
+	eventsCh, errCh := s.conn.SubscribeUnits(time.Duration(s.cfg.SubscribeInterval) * time.Second)
 
 	go func() {
 		for {
 			select {
-			case events := <-chEvents:
-				for _, unit := range events {
-					if unit == nil {
-						log.Printf("[WARN] subscriber: got nil event, ignore")
-						continue
+			case events := <-eventsCh:
+				log.Printf("[DEBUG] got events: %+v", events)
+				units := s.cfg.listUnits()
+				for _, name := range units {
+					event, ok := events[name]
+					if ok {
+						// deleted units are send as nil.
+						// systemd can unload inactive units from memory, so create fake inactive UnitStatus
+						if event == nil {
+							log.Printf("[WARN] subscriber: got event for deleted unit %v", name)
+							event = &dbus.UnitStatus{
+								Name:        name,
+								Description: "",
+								LoadState:   sdStateUnloaded,
+								ActiveState: sdStateInactive,
+								SubState:    sdStateUnloaded,
+							}
+						}
+
+						s.processEvent(event)
 					}
-					s.processEvent(unit)
 				}
-			case err := <-chErr:
+			case err := <-errCh:
 				log.Printf("[ERROR] subscriber: %v", err)
 			}
 		}
@@ -56,11 +70,6 @@ func (s *subscriber) processEvent(u *dbus.UnitStatus) {
 	}
 
 	log.Printf("[INFO] subscriber: match unit %v, ActiveState %v, SubState %v", u.Name, u.ActiveState, u.SubState)
-	// if !contains(s.initialized, unit.Name) {
-	// 	log.Printf("[INFO] subscriber: ignore the first received event on initialization")
-	// 	s.initialized = append(s.initialized, unit.Name)
-	// 	return
-	// }
 
 	switch u.ActiveState {
 	case sdStateActive, sdStateActivating:

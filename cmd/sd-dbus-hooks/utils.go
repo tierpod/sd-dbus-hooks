@@ -44,14 +44,15 @@ func listUnitsByPatterns(conn *dbus.Conn, states []string, patterns []string) ([
 				}
 			}
 			if contains(patterns, name) {
-				us := dbus.UnitStatus{
+				// create fake unloaded UnitStatus
+				unloaded := dbus.UnitStatus{
 					Name:        name,
 					Description: "",
-					LoadState:   sdStateNotInMemory,
-					ActiveState: sdStateNotInMemory,
+					LoadState:   sdStateUnloaded,
+					ActiveState: sdStateUnloaded,
 					SubState:    unitFile.Type,
 				}
-				result = append(result, us)
+				result = append(result, unloaded)
 				continue
 			}
 		}
