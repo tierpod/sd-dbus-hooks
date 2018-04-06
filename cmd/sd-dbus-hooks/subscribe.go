@@ -34,7 +34,7 @@ func (s *subscriber) subscribe() {
 		for {
 			select {
 			case events := <-eventsCh:
-				log.Printf("[DEBUG] got events: %+v", events)
+				// log.Printf("[DEBUG] got events: %+v", events)
 				units := s.cfg.listUnits()
 				for _, name := range units {
 					event, ok := events[name]
