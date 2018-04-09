@@ -67,7 +67,7 @@ func main() {
 
 	daemon.SdNotify(false, daemon.SdNotifyReady)
 
-	log.Printf("[INFO] starting web server on: %v\n", cfg.HTTP.Bind)
+	log.Printf("[INFO] starting web server on: %v (%v)\n", cfg.HTTP.Bind, version)
 	err = http.ListenAndServe(cfg.HTTP.Bind, nil)
 	if err != nil {
 		log.Fatalf("[ERROR] %v", err)
