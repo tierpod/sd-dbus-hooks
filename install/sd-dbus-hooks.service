@@ -8,7 +8,7 @@ User=root
 Group=root
 WorkingDirectory=/opt/sd-dbus-hooks
 ExecStart=/opt/sd-dbus-hooks/sd-dbus-hooks -config ./config.yaml
-ExecReload=kill -USR2 $MAINPID
+ExecReload=/usr/bin/kill -USR2 $MAINPID
 KillMode=process
 
 [Install]
