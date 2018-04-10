@@ -1,5 +1,5 @@
 http:
-  # bind http server to this address:port
+  # bind http server to this address:port. if bind: "", do not start http entrypoints
   bind: 0.0.0.0:8080
   # X-Token header
   x_token: ""

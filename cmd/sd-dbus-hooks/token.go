@@ -6,13 +6,13 @@ import (
 )
 
 type tokenStore struct {
-	token string
+	cfg *Config
 }
 
 func (t *tokenStore) middleware(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		token := r.Header.Get("X-Token")
-		if t.token == "" || t.token == token {
+		if t.cfg.HTTP.XToken == "" || t.cfg.HTTP.XToken == token {
 			log.Printf("[INFO] xtoken: accept request from %v to %v: X-Token \"%v\"", r.RemoteAddr, r.URL.Path, token)
 			next.ServeHTTP(w, r)
 			return
@@ -24,10 +24,4 @@ func (t *tokenStore) middleware(next http.Handler) http.Handler {
 	}
 
 	return http.HandlerFunc(fn)
-}
-
-func newTokenStore(token string) *tokenStore {
-	return &tokenStore{
-		token: token,
-	}
 }

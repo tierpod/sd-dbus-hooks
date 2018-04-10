@@ -66,13 +66,8 @@ type HTTP struct {
 }
 
 func loadConfig(path string) (*Config, error) {
-	var c Config
-	data, err := ioutil.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-
-	err = yaml.Unmarshal(data, &c)
+	c := new(Config)
+	err := updateConfig(c, path)
 	if err != nil {
 		return nil, err
 	}
@@ -82,5 +77,22 @@ func loadConfig(path string) (*Config, error) {
 		c.JournalNumEntries = defaultJournalNumEntries
 	}
 
-	return &c, err
+	return c, err
+}
+
+func updateConfig(cfg *Config, path string) error {
+	var c Config
+
+	data, err := ioutil.ReadFile(path)
+	if err != nil {
+		return err
+	}
+
+	err = yaml.Unmarshal(data, &c)
+	if err != nil {
+		return err
+	}
+
+	*cfg = c
+	return nil
 }
