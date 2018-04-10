@@ -22,6 +22,7 @@ var (
 	sdStatesAll = []string{sdStateActive, sdStateActivating, sdStateInactive, sdStateDeactivating, sdStateFailed, sdStateReloading}
 )
 
+// Config contains service configuration
 type Config struct {
 	Units             []Unit `yaml:"units"`
 	HTTP              HTTP   `yaml:"http"`
@@ -48,6 +49,7 @@ func (c *Config) listUnits() []string {
 	return units
 }
 
+// Unit contains unit configuration
 type Unit struct {
 	Name      string   `yaml:"name"`
 	OnActive  []string `yaml:"on_active"`
@@ -56,13 +58,14 @@ type Unit struct {
 	BlockedBy []string `yaml:"blocked_by"`
 }
 
+// HTTP contains http service configuration
 type HTTP struct {
 	Bind         string `yaml:"bind"`
 	LogTimestamp bool   `yaml:"log_timestamp"`
 	XToken       string `yaml:"x_token"`
 }
 
-func LoadConfig(path string) (*Config, error) {
+func loadConfig(path string) (*Config, error) {
 	var c Config
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
