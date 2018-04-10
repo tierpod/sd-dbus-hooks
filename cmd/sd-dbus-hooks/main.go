@@ -81,6 +81,7 @@ func main() {
 	s := newSubscriber(conn, cfg)
 	s.subscribe()
 
+	log.Printf("[INFO] service started (version: %v)", version)
 	daemon.SdNotify(false, daemon.SdNotifyReady)
 	<-shutdownCh
 	daemon.SdNotify(false, daemon.SdNotifyStopping)
@@ -101,7 +102,7 @@ func startWebServer(conn *dbus.Conn, cfg *Config) {
 		http.Handle("/webui/", http.StripPrefix("/webui/", http.FileServer(http.Dir("webui"))))
 	}
 
-	log.Printf("[INFO] webserver: starting web server on: %v (%v)\n", cfg.HTTP.Bind, version)
+	log.Printf("[INFO] webserver: starting web server on: %v", cfg.HTTP.Bind)
 	err := http.ListenAndServe(cfg.HTTP.Bind, nil)
 	if err != nil {
 		log.Fatalf("[ERROR] webserver: %v", err)
