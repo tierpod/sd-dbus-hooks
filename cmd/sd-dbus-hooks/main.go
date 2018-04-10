@@ -36,7 +36,7 @@ func main() {
 	}
 
 	logFlags := 0
-	if cfg.HTTP.LogTimestamp {
+	if cfg.LogTimestamp {
 		logFlags = log.LstdFlags
 	}
 

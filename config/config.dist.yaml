@@ -1,10 +1,11 @@
 http:
   # bind http server to this address:port
   bind: 0.0.0.0:8080
-  # add timestamp to log?
-  log_timestamp: true
   # X-Token header
   x_token: ""
+
+# add timestamp to log?
+log_timestamp: true
 
 # receive all changed units every interval over dbus
 subscribe_interval: 5

@@ -27,6 +27,7 @@ type Config struct {
 	Units             []Unit `yaml:"units"`
 	HTTP              HTTP   `yaml:"http"`
 	SubscribeInterval int    `yaml:"subscribe_interval"`
+	LogTimestamp      bool   `yaml:"log_timestamp"`
 	JournalNumEntries uint64 `yaml:"journal_num_entries"`
 }
 
@@ -60,9 +61,8 @@ type Unit struct {
 
 // HTTP contains http service configuration
 type HTTP struct {
-	Bind         string `yaml:"bind"`
-	LogTimestamp bool   `yaml:"log_timestamp"`
-	XToken       string `yaml:"x_token"`
+	Bind   string `yaml:"bind"`
+	XToken string `yaml:"x_token"`
 }
 
 func loadConfig(path string) (*Config, error) {
