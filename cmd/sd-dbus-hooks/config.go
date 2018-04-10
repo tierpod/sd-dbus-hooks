@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"sync"
 
 	"gopkg.in/yaml.v2"
 )
@@ -20,6 +21,7 @@ const (
 
 var (
 	sdStatesAll = []string{sdStateActive, sdStateActivating, sdStateInactive, sdStateDeactivating, sdStateFailed, sdStateReloading}
+	configLock  = new(sync.Mutex)
 )
 
 // Config contains service configuration
@@ -93,6 +95,8 @@ func updateConfig(cfg *Config, path string) error {
 		return err
 	}
 
+	configLock.Lock()
+	defer configLock.Unlock()
 	*cfg = c
 	return nil
 }
