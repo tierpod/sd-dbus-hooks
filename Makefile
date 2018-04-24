@@ -1,7 +1,8 @@
-BINARIES  := bin/sd-dbus-hooks
+NAME       := sd-dbus-hooks
+DESTDIR    := /opt
+INSTALLDIR := $(DESTDIR)/$(NAME)
 
 VERSION := $(shell git describe --tags)
-
 LDFLAGS := -ldflags "-X main.version=$(VERSION)"
 
 .PHONY: lint
@@ -12,10 +13,10 @@ lint:
 	#go test ./cmd/... ./pkg/...
 
 .PHONY: build
-build: lint $(BINARIES)
+build: lint bin/$(NAME)
 
-$(BINARIES):
-	go build -v $(LDFLAGS) -o $@ cmd/$(notdir $@)/*.go
+bin/$(NAME):
+	go build -v $(LDFLAGS) -o $@ cmd/$(NAME)/*.go
 
 .PHONY: clean
 clean:
@@ -26,3 +27,15 @@ clean:
 .PHONY: doc
 doc:
 	godoc -http :6060
+
+.PHONY: install
+install: $(INSTALLDIR)
+	install -m 0755 bin/$(NAME) $(INSTALLDIR)
+	install -m 0600 config/config.dist.yaml $(INSTALLDIR)/config.dist.yaml
+
+$(INSTALLDIR) release:
+	mkdir -p $@
+
+release/$(NAME)_linux_amd64.tar.gz: release
+	make DESTDIR=./tmp install
+	tar -cvzf $@ --owner=0 --group=0 -C./tmp $(NAME)
