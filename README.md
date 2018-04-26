@@ -4,7 +4,7 @@ sd-dbus-hooks
 Сервис, который подписывается на [dbus события от systemd][1] и выполняет определённые действия при
 определённых событиях.
 
-Дополнительно, предоставляет несколько простых http entrypoints длязапуска, остановки, просмотра
+Дополнительно, предоставляет несколько простых http entrypoints для запуска, остановки, просмотра
 статуса и журнала юнита; и простой webui, использующий эти entrypoints.
 
 ![webui](webui.png)
@@ -27,7 +27,8 @@ Cобытия и действия
 Во всех параметрах **on_*** можно использовать следующие переменные:
 
 * **{unit_name}** - будет заменено на имя юнита
-* **{unit_state}** - будет заменено на статус/подстатус, в который перешёл юнит
+* **{unit_state}** - будет заменено на статус/подстатус, в который перешёл юнит (например,
+  "active/running")
 
 http entrypoints
 ----------------
@@ -40,7 +41,7 @@ http entrypoints
 * **/unit/status/{unit_name}** - возвращает json, содержащий статус юнита
 * **/unit/start/{unit_name}** - запускает unit и возвращает StatusOK, если юнит запущен успешно
 * **/unit/stop/{unit_name}** - останавливает unit и возвращает StatusOK, если юнит остановлен успешно
-* **/unit/journal/{unit_name}** - возвращает text, содержащий последние N записей из journalctl по
+* **/unit/journal/{unit_name}** - возвращает text, содержащий последние N записей из journal по
   этому юниту (N по-умолчанию 20, можно изменить через параметр journal_num_entries).
 
 Все entrypoints возвращают:
@@ -71,5 +72,8 @@ make bin/sd-dbus-hooks
 -------------
 
 * [halumein](https://github.com/halumein) за помощь с webui
+* [coreos](https://github.com/coreos/go-systemd) за компонент для работы с systemd
+* [bootstrap](https://getbootstrap.com/)
+* [jquery](https://jquery.com/)
 
 [1]: https://www.freedesktop.org/wiki/Software/systemd/dbus/
