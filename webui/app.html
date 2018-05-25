@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>sd-dbus-hooks</title>
 
     <!-- Bootstrap core CSS -->
     <link href="./css/bootstrap.min.css" rel="stylesheet">
@@ -20,9 +20,10 @@
     <div id="app">
         <navbar v-bind:count="count" v-on:get-units="getUnits"></navbar>
 
+        <p></p>
         <div class="container">
             <div class="row">
-                <div class="col-sm">
+                <div class="col">
                     <table class="table table-striped" v-if="units.length">
                         <thead>
                             <tr>
