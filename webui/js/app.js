@@ -22,9 +22,8 @@ Vue.component('unit-item', {
   template: `<tr>
     <td v-bind:title="unit.Description">{{ unit.Name }}</td>
     <td><unit-badge v-bind:state="unit.ActiveState" v-bind:substate="unit.SubState"></unit-badge></td>
-    <td><unit-buttons v-bind:name="unit.Name"></unit-buttons></td>
+    <td><unit-buttons v-bind:name="unit.Name" v-bind:started="unit.ActiveState === 'active'"></unit-buttons></td>
   </tr>`,
-  //template: `<li>{{ unit.Name }}</li>`,
 });
 
 // unit item badge
@@ -54,16 +53,80 @@ Vue.component('unit-badge', {
   }
 });
 
+// unit item buttons
 Vue.component('unit-buttons', {
+  props: ['name', 'started'],
+  template: `<div class="unit-buttons">
+    <unit-button-start v-if="!started" v-bind:name="name"></unit-button-start>
+    <unit-button-stop v-else v-bind:name="name"></unit-button-stop>
+    <unit-button-journal v-bind:name="name"></unit-button-journal>
+  </div>`,
+});
+
+Vue.component('unit-button-start', {
   props: ['name'],
-  template: `<button type="button" class="btn btn-sm btn-danger" v-bind:name="name">stop</button>`,
-})
+  template: `<button type="button" class="btn btn-sm btn-danger" v-bind:name="name" v-on:click="start">start</button>`,
+
+  methods: {
+    start: function() {
+      var self = this;
+      console.log("start " + this.name);
+
+      HTTP.get('/unit/start/' + this.name)
+      .then(function(responce) {
+        app.getUnits();
+      })
+      .catch(function(error) {
+        alert(error);
+      });
+    }
+  }
+});
+
+Vue.component('unit-button-stop', {
+  props: ['name'],
+  template: `<button type="button" class="btn btn-sm btn-danger" v-bind:name="name" v-on:click="stop">stop</button>`,
+
+  methods: {
+    stop: function() {
+      var self = this;
+      console.log("stop " + this.name);
+
+      HTTP.get('/unit/stop/' + this.name)
+      .then(function(responce) {
+        app.getUnits();
+      })
+      .catch(function(error) {
+        alert(error);
+      });
+    }
+  }
+});
+
+Vue.component('unit-button-journal', {
+  props: ['name'],
+  template: `<button type="button" class="btn btn-sm btn-info" v-bind:name="name" v-on:click="journal">journal</button>`,
+
+  methods: {
+    journal: function() {
+      var self = this;
+      console.log("get journal " + this.name);
+
+      HTTP.get('/unit/journal/' + this.name)
+      .then(function(responce) {
+        console.log(responce.data);
+      })
+      .catch(function(error) {
+        alert(error);
+      });
+    }
+  }
+});
 
 var app = new Vue({
   el: '#app',
 
   data: {
-    message: 'Hello Vue!',
     units: [],
   },
 
@@ -83,7 +146,6 @@ var app = new Vue({
 
       HTTP.get('/unit/status/')
       .then(function(responce) {
-        console.log(responce.data);
         self.units = responce.data;
       })
       .catch(function(error) {
