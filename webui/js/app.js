@@ -105,21 +105,57 @@ Vue.component('unit-button-stop', {
 
 Vue.component('unit-button-journal', {
   props: ['name'],
-  template: `<button type="button" class="btn btn-sm btn-info" v-bind:name="name" v-on:click="journal">journal</button>`,
+  template: `<button type="button" class="btn btn-sm btn-info" v-bind:name="name" v-on:click="showModal">journal</button>`,
 
   methods: {
-    journal: function() {
+    getData: function() {
       var self = this;
       console.log("get journal " + this.name);
 
       HTTP.get('/unit/journal/' + this.name)
       .then(function(responce) {
-        console.log(responce.data);
+        app.journalItem = {
+          name: self.name,
+          data: responce.data,
+        }
       })
       .catch(function(error) {
         alert(error);
       });
-    }
+    },
+
+    showModal: function() {
+      var self = this;
+      self.getData();
+      $("#journal-modal").modal("show");
+    },
+  }
+});
+
+// journal modal window
+Vue.component('journal-modal', {
+  props: ['item'],
+  template: `
+  <div class="modal fade" id="journal-modal" role="dialog" aria-labelledby="JournalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">journal for: {{ item.name }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="hide">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+          <pre>
+{{ item.data }}
+          </pre>
+        </div>
+      </div>
+    </div>
+  </div>`,
+
+  methods: {
+    hide: function() { $("#journal-modal").modal("hide") }
   }
 });
 
@@ -128,6 +164,10 @@ var app = new Vue({
 
   data: {
     units: [],
+    journalItem: {
+      name: "",
+      data: "",
+    },
   },
 
   created: function() {
