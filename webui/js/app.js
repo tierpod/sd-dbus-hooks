@@ -65,7 +65,7 @@ Vue.component('unit-buttons', {
 
 Vue.component('unit-button-start', {
   props: ['name'],
-  template: `<button type="button" class="btn btn-sm btn-danger" v-bind:name="name" v-on:click="start">start</button>`,
+  template: `<button type="button" class="btn btn-sm btn-primary" v-bind:name="name" v-on:click="start">start</button>`,
 
   methods: {
     start: function() {
