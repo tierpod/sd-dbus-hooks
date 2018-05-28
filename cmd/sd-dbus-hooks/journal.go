@@ -34,6 +34,7 @@ func (h unitJournalHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	defer jr.Close()
 
 	log.Printf("[INFO] journal: show last %v entries for %v", h.cfg.JournalNumEntries, name)
 	fmt.Fprintf(w, "=== begin journal ===\n")

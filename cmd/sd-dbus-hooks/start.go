@@ -38,12 +38,14 @@ func (h unitStartHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch status {
 	case "done":
 		log.Printf("[INFO] unit %v started successfull", name)
+		fmt.Fprint(w, "OK")
 		return
 	case "timeout", "failed":
 		log.Printf("[ERROR] unit %v not started: %v", name, status)
 		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
+
 	return
 }
 
