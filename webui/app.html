@@ -19,27 +19,8 @@
 
     <div id="app">
         <navbar v-bind:count="count" v-on:get-units="getUnits"></navbar>
-
         <p></p>
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    <table class="table table-striped" v-if="units.length">
-                        <thead>
-                            <tr>
-                            <th scope="col">unit name</th>
-                            <th scope="col">status</th>
-                            <th scope="col">actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr is="unit-item" v-for="item in units" v-bind:unit="item"></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
+        <units-table v-bind:units="units"></units-table>
         <journal-modal v-bind:item="journalItem"></journal-modal>
     </div>
 

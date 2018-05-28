@@ -159,6 +159,30 @@ Vue.component('journal-modal', {
   }
 });
 
+// units table
+Vue.component('units-table', {
+  props: ['units'],
+  template: `
+<div class="container">
+  <div class="row">
+      <div class="col">
+          <table class="table table-striped" v-if="units.length">
+              <thead>
+                  <tr>
+                  <th scope="col">unit name</th>
+                  <th scope="col">status</th>
+                  <th scope="col">actions</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr is="unit-item" v-for="item in units" v-bind:unit="item"></tr>
+              </tbody>
+          </table>
+      </div>
+  </div>
+</div>`,
+})
+
 var app = new Vue({
   el: '#app',
 
