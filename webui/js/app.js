@@ -16,54 +16,7 @@ Vue.component('navbar', {
   </nav>`,
 });
 
-// unit item component
-Vue.component('unit-item', {
-  props: ['unit'],
-  template: `<tr>
-    <td v-bind:title="unit.Description">{{ unit.Name }}</td>
-    <td><unit-badge v-bind:state="unit.ActiveState" v-bind:substate="unit.SubState"></unit-badge></td>
-    <td><unit-buttons v-bind:name="unit.Name" v-bind:started="unit.ActiveState === 'active'"></unit-buttons></td>
-  </tr>`,
-});
-
-// unit item badge
-Vue.component('unit-badge', {
-  props: ['state', 'substate'],
-  template: `<span class="badge" v-bind:class="badgeClass">{{ state }} / {{ substate }}</span>`,
-
-  computed: {
-    badgeClass: function() {
-      var self = this;
-
-      switch(self.state) {
-        case "active":
-          return 'badge-success';
-          break
-        case "inactive":
-          return 'badge-secondary';
-          break
-        case "failed":
-          return 'badge-danger';
-          break
-        default:
-          return 'badge-warning';
-          break
-      };
-    }
-  }
-});
-
-// unit item buttons
-Vue.component('unit-buttons', {
-  props: ['name', 'started'],
-  template: `<div class="unit-buttons">
-    <unit-button-start v-if="!started" v-bind:name="name"></unit-button-start>
-    <unit-button-stop v-else v-bind:name="name"></unit-button-stop>
-    <unit-button-journal v-bind:name="name"></unit-button-journal>
-  </div>`,
-});
-
-Vue.component('unit-button-start', {
+Vue.component('unit-start-button', {
   props: ['name'],
   template: `<button type="button" class="btn btn-sm btn-primary" v-bind:name="name" v-on:click="start">start</button>`,
 
@@ -83,7 +36,7 @@ Vue.component('unit-button-start', {
   }
 });
 
-Vue.component('unit-button-stop', {
+Vue.component('unit-stop-button', {
   props: ['name'],
   template: `<button type="button" class="btn btn-sm btn-danger" v-bind:name="name" v-on:click="stop">stop</button>`,
 
@@ -103,7 +56,7 @@ Vue.component('unit-button-stop', {
   }
 });
 
-Vue.component('unit-button-journal', {
+Vue.component('unit-journal-button', {
   props: ['name'],
   template: `<button type="button" class="btn btn-sm btn-info" v-bind:name="name" v-on:click="showModal">journal</button>`,
 
@@ -129,6 +82,44 @@ Vue.component('unit-button-journal', {
       self.getData();
       $("#journal-modal").modal("show");
     },
+  }
+});
+
+// unit item component
+Vue.component('unit-item', {
+  props: ['unit'],
+  template: `
+<tr>
+  <td v-bind:title="unit.Description">{{ unit.Name }}</td>
+  <td><span class="badge" v-bind:class="badgeClass">{{ unit.ActiveState }} / {{ unit.SubState }}</span></td>
+  <td>
+    <unit-start-button v-if="isUnitActive" v-bind:name="unit.Name"/>
+    <unit-stop-button v-else v-bind:name="unit.Name"/>
+    <unit-journal-button v-bind:name="unit.Name"/>
+  </td>
+</tr>`,
+
+  computed: {
+    badgeClass: function() {
+      switch(this.unit.ActiveState) {
+        case "active":
+          return 'badge-success';
+          break
+        case "inactive":
+          return 'badge-secondary';
+          break
+        case "failed":
+          return 'badge-danger';
+          break
+        default:
+          return 'badge-warning';
+          break
+      };
+    },
+
+    isUnitActive: function() {
+      return this.unit.ActiveState === 'active';
+    }
   }
 });
 
