@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -37,11 +38,13 @@ func (h unitStopHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch status {
 	case "done":
 		log.Printf("[INFO] unit %v stopped successfull", name)
+		fmt.Fprint(w, "OK")
 		return
 	case "timeout", "failed":
 		log.Printf("[ERROR] unit %v not stopped: %v", name, status)
 		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
+
 	return
 }
