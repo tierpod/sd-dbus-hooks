@@ -93,9 +93,9 @@ Vue.component('unit-item', {
   <td v-bind:title="unit.Description">{{ unit.Name }}</td>
   <td><span class="badge" v-bind:class="badgeClass">{{ unit.ActiveState }} / {{ unit.SubState }}</span></td>
   <td>
-    <unit-start-button v-if="isUnitActive" v-bind:name="unit.Name"/>
-    <unit-stop-button v-else v-bind:name="unit.Name"/>
-    <unit-journal-button v-bind:name="unit.Name"/>
+    <unit-start-button v-if="!isUnitActive" v-bind:name="unit.Name"></unit-start-button>
+    <unit-stop-button v-else v-bind:name="unit.Name"></unit-stop-button>
+    <unit-journal-button v-bind:name="unit.Name"></unit-journal-button>
   </td>
 </tr>`,
 
