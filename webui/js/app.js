@@ -1,11 +1,4 @@
-// const token = prompt("enter token");
-
-const HTTP = axios.create({
-  headers: {
-    //'X-Token': token,
-    'X-Token': '123',
-  }
-})
+const HTTP = axios.create();
 
 // header component
 Vue.component('navbar', {
@@ -169,6 +162,44 @@ Vue.component('journal-modal', {
   }
 });
 
+// enter x-token modal window
+Vue.component('login-modal', {
+  data: function() {
+    return {
+      token: "",
+    }
+  },
+
+  template: `
+  <div class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <section class="modal-card-body">
+      <label class="label">Token</label>
+      <div class="field has-addons">
+        <div class="control is-expanded">
+          <input class="input" type=text placeholder="enter token" v-model="token"></input>
+        </div>
+        <div class="control">
+          <a class="button is-primary" v-on:click="login">login</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+  `,
+
+  methods: {
+    hide: function() { app.showLogin = false; },
+    login: function() {
+      HTTP.defaults.headers.common['X-Token'] = this.token;
+      this.hide();
+      app.isLoggedIn = true;
+      app.getUnits();
+    },
+  }
+})
+
 // units table
 Vue.component('units-table', {
   props: ['units'],
@@ -192,6 +223,8 @@ var app = new Vue({
   data: {
     units: [],
     showJournal: false,
+    showLogin: true,
+    isLoggedIn: false,
     journalItem: {
       name: "",
       data: "",
@@ -210,6 +243,10 @@ var app = new Vue({
 
   methods: {
     getUnits: function() {
+      if (!this.isLoggedIn) {
+        return false;
+      };
+
       var self = this;
 
       HTTP.get('/unit/status/')

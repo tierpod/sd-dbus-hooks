@@ -25,6 +25,7 @@
                 <div class="column is-2"></div>
             </div>
         </div>
+        <login-modal v-bind:class="{ 'is-active': showLogin }"></login-modal>
         <journal-modal v-bind:class="{ 'is-active': showJournal }" v-bind:item="journalItem"></journal-modal>
     </div>
 
