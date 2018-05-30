@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>sd-dbus-hooks</title>
 
-    <!-- Bootstrap core CSS -->
-    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/bulma.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -14,14 +13,19 @@
     <script src="./js/vue.js"></script>
     <!-- http client -->
     <script src="./js/axios.min.js"></script>
-    <script src="./js/jquery-3.3.1.min.js"></script>
-    <script src="./js/bootstrap.min.js"></script>
 
     <div id="app">
         <navbar v-bind:count="count" v-on:get-units="getUnits"></navbar>
-        <p></p>
-        <units-table v-bind:units="units"></units-table>
-        <journal-modal v-bind:item="journalItem"></journal-modal>
+        <div class="container">
+            <div class="columns">
+                <div class="column is-2"></div>
+                <div class="column">
+                    <units-table v-bind:units="units"></units-table>
+                </div>
+                <div class="column is-2"></div>
+            </div>
+        </div>
+        <journal-modal v-bind:class="{ 'is-active': showJournal }" v-bind:item="journalItem"></journal-modal>
     </div>
 
     <script src="./js/app.js"></script>
