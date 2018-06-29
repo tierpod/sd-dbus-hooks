@@ -63,8 +63,9 @@ type Unit struct {
 
 // HTTP contains http service configuration
 type HTTP struct {
-	Bind   string `yaml:"bind"`
-	XToken string `yaml:"x_token"`
+	Enabled bool   `yaml:"enabled"`
+	Bind    string `yaml:"bind"`
+	XToken  string `yaml:"x_token"`
 }
 
 func loadConfig(path string) (*Config, error) {
