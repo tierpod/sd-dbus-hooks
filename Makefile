@@ -2,27 +2,30 @@ NAME       := sd-dbus-hooks
 DESTDIR    := /opt
 INSTALLDIR := $(DESTDIR)/$(NAME)
 
-VERSION := $(shell git describe --tags)
-LDFLAGS := -ldflags "-X main.version=$(VERSION)"
+GIT_VER    := $(shell git describe --abbrev=7 --always --tags)-$(shell git rev-parse --abbrev-ref HEAD)
+LDFLAGS    := -ldflags "-X main.version=$(GIT_VER)-$(shell date +%Y%m%d)"
 
 .PHONY: lint
 lint:
-	find ./cmd ./pkg -type f -name '*.go' | xargs gofmt -l -e
-	go vet ./cmd/... ./pkg/...
-	$(GOPATH)/bin/golint ./cmd/... ./pkg/...
-	#go test ./cmd/... ./pkg/...
+	go vet ./app/...
+	golint ./app/...
+
+.PHONY: test
+test:
+	go test ./app/...
 
 .PHONY: build
-build: lint bin/$(NAME)
+build: lint test bin/$(NAME)
 
 bin/$(NAME):
-	go build -v $(LDFLAGS) -o $@ cmd/$(NAME)/*.go
+	go build -v $(LDFLAGS) -o $@ ./app/*.go
 
 .PHONY: clean
 clean:
 	rm -f bin/*
 	rm -f install/*.retry
 	rm -f ./pprof
+	rm -rf release/*.tar.gz
 
 .PHONY: doc
 doc:
@@ -36,6 +39,6 @@ install: $(INSTALLDIR)
 $(INSTALLDIR) release:
 	mkdir -p $@
 
-release/$(NAME)_linux_amd64.tar.gz: release
+release/$(NAME)_linux_amd64.tar.gz: build release
 	make DESTDIR=./tmp install
 	tar -cvzf $@ --owner=0 --group=0 -C./tmp $(NAME)
