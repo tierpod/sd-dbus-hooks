@@ -113,16 +113,12 @@ Vue.component('unit-item', {
       switch(this.unit.ActiveState) {
         case "active":
           return 'is-success';
-          break
         case "inactive":
           return 'is-light';
-          break
         case "failed":
           return 'is-danger';
-          break
         default:
           return 'is-warning';
-          break
       };
     },
 

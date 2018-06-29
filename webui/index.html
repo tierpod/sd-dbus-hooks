@@ -1,57 +1,35 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>sd-dbus-hooks</title>
 
-    <!-- Bootstrap core CSS -->
-    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/bulma.min.css" rel="stylesheet">
 </head>
 
 <body>
-    <script src="./js/jquery-3.3.1.min.js"></script>
-    <script src="./js/bootstrap.min.js"></script>
-    <script src="./js/sd-dbus-hooks.js" type="text/javascript"></script>
+    <!-- development version, includes helpful console warnings -->
+    <script src="./js/vue.js"></script>
+    <!-- http client -->
+    <script src="./js/axios.min.js"></script>
 
-    <nav class="navbar navbar-dark bg-dark">
-        <a class="navbar-brand" href="#" id="navbar-title">
-            Systemd dbus hooks
-        </a>
-        <button class="btn btn-primary" type="button" id="reload-btn">reload</button>
-    </nav>
-
-    <div class="container">
-        <div class="row">
-            <div class="col-sm">
-                <table class="table table-striped" id="units-table">
-                    <thead>
-                        <tr>
-                        <th scope="col">unit name</th>
-                        <th scope="col">status</th>
-                        <th scope="col">actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="units-table">
-                    </tbody>
-                </table>
+    <div id="app">
+        <navbar v-bind:count="count" v-on:get-units="getUnits"></navbar>
+        <div class="container">
+            <div class="columns">
+                <div class="column is-2"></div>
+                <div class="column">
+                    <units-table v-bind:units="units"></units-table>
+                </div>
+                <div class="column is-2"></div>
             </div>
         </div>
+        <login-modal v-bind:class="{ 'is-active': showLogin }"></login-modal>
+        <journal-modal v-bind:class="{ 'is-active': showJournal }" v-bind:item="journalItem"></journal-modal>
     </div>
 
-    <div class="modal fade" id="journal-modal" tabindex="-1" role="dialog" aria-labelledby="JournalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="journal-title">journal</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" id="journal-data">
-                </div>
-            </div>
-        </div>
-    </div>
+    <script src="./js/app.js"></script>
 </body>
+
 </html>
