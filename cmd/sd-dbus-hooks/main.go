@@ -73,7 +73,7 @@ func main() {
 		log.Fatalf("[ERROR] %v", err)
 	}
 
-	if cfg.HTTP.Bind != "" {
+	if cfg.HTTP.Enabled {
 		go startWebServer(conn, cfg)
 	}
 
