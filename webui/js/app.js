@@ -174,7 +174,10 @@ Vue.component('login-modal', {
       <label class="label">Token</label>
       <div class="field has-addons">
         <div class="control is-expanded">
-          <input class="input" type=text placeholder="enter token" v-model="token"></input>
+          <input class="input" type=text placeholder="enter token" v-model="token"
+            v-on:keyup.enter="login"
+          >
+          </input>
         </div>
         <div class="control">
           <a class="button is-primary" v-on:click="login">login</a>
