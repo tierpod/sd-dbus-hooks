@@ -62,8 +62,8 @@ curl -H 'X-Token: 123' localhost:8080/unit/status/rsyslog.service
 ------
 
 ```bash
-# for centos7
-yum install -y systemd-devel
+# for RHEL based
+dnf install -y systemd-devel
 go get github.com/tierpod/sd-dbus-hooks
 make bin/sd-dbus-hooks
 ```

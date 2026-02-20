@@ -45,8 +45,6 @@ func (h unitStartHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
-
-	return
 }
 
 func start(conn *dbus.Conn, cfg *Config, u Unit, ch chan<- string) error {

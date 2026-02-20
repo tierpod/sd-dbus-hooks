@@ -45,6 +45,4 @@ func (h unitStopHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
-
-	return
 }
