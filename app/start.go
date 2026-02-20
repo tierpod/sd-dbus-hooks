@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/coreos/go-systemd/dbus"
+	"github.com/coreos/go-systemd/v22/dbus"
 )
 
 type unitStartHandler struct {
@@ -45,8 +45,6 @@ func (h unitStartHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
-
-	return
 }
 
 func start(conn *dbus.Conn, cfg *Config, u Unit, ch chan<- string) error {

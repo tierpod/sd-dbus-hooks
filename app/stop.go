@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/coreos/go-systemd/dbus"
+	"github.com/coreos/go-systemd/v22/dbus"
 )
 
 type unitStopHandler struct {
@@ -45,6 +45,4 @@ func (h unitStopHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
-
-	return
 }

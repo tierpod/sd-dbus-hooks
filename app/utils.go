@@ -4,7 +4,7 @@ import (
 	"path"
 	"reflect"
 
-	"github.com/coreos/go-systemd/dbus"
+	"github.com/coreos/go-systemd/v22/dbus"
 )
 
 func listUnitsByPatterns(conn *dbus.Conn, states []string, patterns []string) ([]dbus.UnitStatus, error) {
