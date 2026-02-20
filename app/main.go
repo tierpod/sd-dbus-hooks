@@ -11,8 +11,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/coreos/go-systemd/daemon"
-	"github.com/coreos/go-systemd/dbus"
+	"github.com/coreos/go-systemd/v22/daemon"
+	"github.com/coreos/go-systemd/v22/dbus"
 )
 
 var version string

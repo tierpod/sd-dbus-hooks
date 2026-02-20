@@ -6,8 +6,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/coreos/go-systemd/dbus"
-	"github.com/coreos/go-systemd/sdjournal"
+	"github.com/coreos/go-systemd/v22/dbus"
+	"github.com/coreos/go-systemd/v22/sdjournal"
 )
 
 type unitJournalHandler struct {
